@@ -20,7 +20,7 @@ import java.util.List;
 public class ProductCodec implements Codec<Product> {
 
     /** */
-    private CodecRegistry codecRegistry;
+    private final CodecRegistry codecRegistry;
 
     /**
      *
@@ -32,36 +32,36 @@ public class ProductCodec implements Codec<Product> {
 
     /**
      *
-     * @param reader
+     * @param bsonReader
      * @param decoderContext
      * @return
      */
-    public Product decode(BsonReader reader, DecoderContext decoderContext) {
-        reader.readStartDocument();
+    public Product decode(BsonReader bsonReader, DecoderContext decoderContext) {
+        bsonReader.readStartDocument();
 
-        Object _id = reader.readObjectId();
+        Object _id = bsonReader.readObjectId();
 
-        int id = reader.readInt32("id");
+        String name = bsonReader.readString("name");
 
-        String name = reader.readString("name");
-        String description = reader.readString("description");
-        String image = reader.readString("image");
+        String description = bsonReader.readString("description");
 
-        double price = reader.readDouble("price");
+        String image = bsonReader.readString("image");
+
+        double price = bsonReader.readDouble("price");
 
         Codec<Document> historyCodec = codecRegistry.get(Document.class);
         List<Dimension> dimensions = new LinkedList<Dimension>();
 
-        reader.readStartArray();
+        bsonReader.readStartArray();
 
-        while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
-            dimensions.add((Dimension)historyCodec.decode(reader, decoderContext));
+        while (bsonReader.readBsonType() != BsonType.END_OF_DOCUMENT) {
+            dimensions.add((Dimension)historyCodec.decode(bsonReader, decoderContext));
         }
 
-        reader.readEndArray();
-        reader.readEndDocument();
+        bsonReader.readEndArray();
+        bsonReader.readEndDocument();
 
-        Product product = new Product(id, name, description, image, price);
+        Product product = new Product(name, description, image, price);
 
         product.setDimensions(dimensions);
 
@@ -70,38 +70,35 @@ public class ProductCodec implements Codec<Product> {
 
     /**
      *
-     * @param writer
+     * @param bsonWriter
      * @param product
      * @param encoderContext
      */
-    public void encode(BsonWriter writer, Product product, EncoderContext encoderContext) {
+    public void encode(BsonWriter bsonWriter, Product product, EncoderContext encoderContext) {
 
-        writer.writeStartDocument();
+        bsonWriter.writeStartDocument();
 
-        writer.writeName("id");
-        writer.writeInt32(product.getId());
+        bsonWriter.writeName("name");
+        bsonWriter.writeString(product.getName());
 
-        writer.writeName("name");
-        writer.writeString(product.getName());
+        bsonWriter.writeName("description");
+        bsonWriter.writeString(product.getDescription());
 
-        writer.writeName("description");
-        writer.writeString(product.getDescription());
+        bsonWriter.writeName("image");
+        bsonWriter.writeString(product.getImage());
 
-        writer.writeName("image");
-        writer.writeString(product.getImage());
+        bsonWriter.writeName("price");
+        bsonWriter.writeDouble(product.getPrice());
 
-        writer.writeName("price");
-        writer.writeDouble(product.getPrice());
-
-        writer.writeStartArray("dimensions");
+        bsonWriter.writeStartArray("dimensions");
 
         for (Document document : product.getDimensions()) {
             Codec<Document> documentCodec = codecRegistry.get(Document.class);
-            encoderContext.encodeWithChildContext(documentCodec, writer, document);
+            encoderContext.encodeWithChildContext(documentCodec, bsonWriter, document);
         }
 
-        writer.writeEndArray();
-        writer.writeEndDocument();
+        bsonWriter.writeEndArray();
+        bsonWriter.writeEndDocument();
     }
 
     /**

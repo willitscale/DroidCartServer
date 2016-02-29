@@ -14,7 +14,7 @@ import uk.co.n3tw0rk.droidcart.products.domain.Dimension;
 public class DimensionCodec implements Codec<Dimension> {
 
     /** */
-    private CodecRegistry codecRegistry;
+    private final CodecRegistry codecRegistry;
 
     /**
      *
@@ -26,16 +26,16 @@ public class DimensionCodec implements Codec<Dimension> {
 
     /**
      *
-     * @param reader
+     * @param bsonReader
      * @param decoderContext
      * @return
      */
-    public Dimension decode(BsonReader reader, DecoderContext decoderContext) {
-        reader.readStartDocument();
+    public Dimension decode(BsonReader bsonReader, DecoderContext decoderContext) {
+        bsonReader.readStartDocument();
 
-        int id = reader.readInt32("id");
+        int id = bsonReader.readInt32("id");
 
-        String name = reader.readString("name");
+        String name = bsonReader.readString("name");
 
         Dimension dimension = new Dimension();
 
@@ -47,19 +47,19 @@ public class DimensionCodec implements Codec<Dimension> {
 
     /**
      *
-     * @param writer
+     * @param bsonWriter
      * @param dimension
      * @param encoderContext
      */
-    public void encode(BsonWriter writer, Dimension dimension, EncoderContext encoderContext) {
+    public void encode(BsonWriter bsonWriter, Dimension dimension, EncoderContext encoderContext) {
 
-        writer.writeStartDocument();
-        writer.writeName("id");
-        writer.writeInt32(dimension.getId());
+        bsonWriter.writeStartDocument();
+        bsonWriter.writeName("id");
+        bsonWriter.writeInt32(dimension.getId());
 
-        writer.writeName("name");
-        writer.writeString(dimension.getName());
-        writer.writeEndDocument();
+        bsonWriter.writeName("name");
+        bsonWriter.writeString(dimension.getName());
+        bsonWriter.writeEndDocument();
     }
 
     /**

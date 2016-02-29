@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by M00SEMARKTWO on 06/02/2016.
  */
 @Component
-@Path("/product")
+@Path("/manager/product")
 public class ProductResource {
 
     @Autowired
@@ -32,7 +32,7 @@ public class ProductResource {
         StringBuilder data = new StringBuilder();
 
         if (null != dataRepository) {
-            List<Document> documents = dataRepository.find("products", new Product(123, "test", "Test", "test", 10.2d));
+            List<Document> documents = dataRepository.find("products", new Product("test", "Test", "test", 10.2d));
 
             for(Document document:documents) {
                 data.append(document.toString());
