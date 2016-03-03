@@ -4,10 +4,10 @@ import com.mongodb.*;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 import org.apache.log4j.Logger;
-import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
+import uk.co.n3tw0rk.droidcart.products.domain.DroidDocument;
 import uk.co.n3tw0rk.droidcart.products.providers.DroidCardCodecProvider;
 
 import java.util.LinkedList;
@@ -64,7 +64,7 @@ public class MongoDataSource implements DataSource {
      * @param document
      * @return
      */
-    public boolean insertOne(Document document) {
+    public boolean insertOne(DroidDocument document) {
         return insertOne(collection, document);
     }
 
@@ -73,7 +73,7 @@ public class MongoDataSource implements DataSource {
      * @param document
      * @return
      */
-    public boolean insertOne(String collection, Document document) {
+    public boolean insertOne(String collection, DroidDocument document) {
         try {
             db.getCollection(collection).insertOne(document);
             return true;
@@ -88,7 +88,7 @@ public class MongoDataSource implements DataSource {
      * @param document
      * @return
      */
-    public boolean insert(List<Document> document) {
+    public boolean insert(List<DroidDocument> document) {
         return insert(document);
     }
 
@@ -97,7 +97,7 @@ public class MongoDataSource implements DataSource {
      * @param document
      * @return
      */
-    public boolean insert(String collection, List<Document> document) {
+    public boolean insert(String collection, List<DroidDocument> document) {
         try {
             db.getCollection(collection).insertMany(document);
             return true;
@@ -135,7 +135,7 @@ public class MongoDataSource implements DataSource {
      * @param document
      * @return
      */
-    public List<Document> find(Document document) {
+    public List<DroidDocument> find(DroidDocument document) {
         return find(collection, document);
     }
 
@@ -144,16 +144,16 @@ public class MongoDataSource implements DataSource {
      * @param document
      * @return
      */
-    public List<Document> find(String collection, Document document) {
+    public List<DroidDocument> find(String collection, DroidDocument document) {
 
-        final List<Document> documents = new LinkedList<Document>();
+        final List<DroidDocument> documents = new LinkedList<DroidDocument>();
 
         try {
-            FindIterable<Document> iterable = db.getCollection(collection).find(document);
+            FindIterable<DroidDocument> iterable = db.getCollection(collection).find(document, DroidDocument.class);
 
-            iterable.forEach(new Block<Document>() {
-                public void apply(Document product) {
-                    documents.add(product);
+            iterable.forEach(new Block<DroidDocument>() {
+                public void apply(DroidDocument doc) {
+                    documents.add(doc);
                 }
             });
 

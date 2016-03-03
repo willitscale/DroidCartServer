@@ -78,6 +78,9 @@ public class ProductCodec implements Codec<Product> {
 
         bsonWriter.writeStartDocument();
 
+        bsonWriter.writeName("_id");
+        bsonWriter.writeObjectId(product.getObjectId());
+
         bsonWriter.writeName("name");
         bsonWriter.writeString(product.getName());
 

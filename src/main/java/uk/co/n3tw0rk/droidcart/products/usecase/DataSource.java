@@ -1,7 +1,6 @@
 package uk.co.n3tw0rk.droidcart.products.usecase;
 
-import com.sun.research.ws.wadl.Doc;
-import org.bson.Document;
+import uk.co.n3tw0rk.droidcart.products.domain.DroidDocument;
 
 import java.util.List;
 
@@ -22,14 +21,14 @@ public interface DataSource {
      * @param document
      * @return
      */
-    List<Document> find(String collection, Document document);
+    List<DroidDocument> find(String collection, DroidDocument document);
 
     /**
      *
      * @param document
      * @return
      */
-    List<Document> find(Document document);
+    List<DroidDocument> find(DroidDocument document);
 
     /**
      *
@@ -50,14 +49,14 @@ public interface DataSource {
      * @param document
      * @return
      */
-    boolean insertOne(String collection, Document document);
+    boolean insertOne(String collection, DroidDocument document);
 
     /**
      *
      * @param document
      * @return
      */
-    boolean insertOne(Document document);
+    boolean insertOne(DroidDocument document);
 
     /**
      *
@@ -65,12 +64,12 @@ public interface DataSource {
      * @param document
      * @return
      */
-    boolean insert(String collection, List<Document> document);
+    boolean insert(String collection, List<DroidDocument> document);
 
     /**
      *
      * @param document
      * @return
      */
-    boolean insert(List<Document> document);
+    boolean insert(List<DroidDocument> document);
 }

@@ -1,8 +1,8 @@
 package uk.co.n3tw0rk.droidcart.products.repository;
 
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import uk.co.n3tw0rk.droidcart.products.domain.DroidDocument;
 import uk.co.n3tw0rk.droidcart.products.usecase.DataSource;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class DataRepository {
      * @param document
      * @return
      */
-    public List<Document> find(String collection, Document document) {
+    public List<DroidDocument> find(String collection, DroidDocument document) {
         return dataSource.find(collection, document);
     }
 
@@ -40,7 +40,7 @@ public class DataRepository {
      * @param document
      * @return
      */
-    public boolean insertOne(String collection, Document document) {
+    public boolean insertOne(String collection, DroidDocument document) {
         return dataSource.insertOne(collection, document);
     }
 

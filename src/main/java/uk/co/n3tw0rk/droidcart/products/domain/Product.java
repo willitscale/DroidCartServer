@@ -1,14 +1,12 @@
 package uk.co.n3tw0rk.droidcart.products.domain;
 
-import org.bson.Document;
-
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by M00SEMARKTWO on 14/02/2016.
  */
-public class Product extends Document {
+public class Product extends DroidDocument {
 
     private String name;
     private String description;

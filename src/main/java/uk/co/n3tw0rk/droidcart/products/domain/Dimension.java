@@ -1,11 +1,9 @@
 package uk.co.n3tw0rk.droidcart.products.domain;
 
-import org.bson.Document;
-
 /**
  * Created by M00SEMARKTWO on 14/02/2016.
  */
-public class Dimension extends Document {
+public class Dimension extends DroidDocument {
 
     private int id;
     private String name;
