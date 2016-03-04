@@ -4,6 +4,7 @@ import com.sun.jersey.api.view.Viewable;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.co.n3tw0rk.droidcart.products.domain.DroidDocument;
 import uk.co.n3tw0rk.droidcart.products.domain.Product;
 import uk.co.n3tw0rk.droidcart.products.repository.DataRepository;
 
@@ -32,9 +33,9 @@ public class ProductResource {
         StringBuilder data = new StringBuilder();
 
         if (null != dataRepository) {
-            List<Document> documents = dataRepository.find("products", new Product("test", "Test", "test", 10.2d));
+            List<DroidDocument> documents = dataRepository.find("products", new Product("test", "Test", "test", 10.2d));
 
-            for(Document document:documents) {
+            for (DroidDocument document : documents) {
                 data.append(document.toString());
             }
 

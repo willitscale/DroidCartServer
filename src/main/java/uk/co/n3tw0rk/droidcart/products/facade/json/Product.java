@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.co.n3tw0rk.droidcart.products.domain.DroidDocument;
 import uk.co.n3tw0rk.droidcart.products.repository.DataRepository;
 
 import javax.ws.rs.*;
@@ -19,12 +20,16 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class Product {
 
+    private final String collection = "products";
+
     @Autowired
     DataRepository dataRepository;
 
     @GET
     public Response index() {
-        return Response.ok().build();
+        List<DroidDocument> products = dataRepository.find(collection, new uk.co.n3tw0rk.droidcart.products.domain.Product("", "", 0.0d));
+
+        return Response.ok(products).build();
     }
 
     @POST
