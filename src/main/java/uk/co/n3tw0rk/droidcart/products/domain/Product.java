@@ -1,5 +1,8 @@
 package uk.co.n3tw0rk.droidcart.products.domain;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import uk.co.n3tw0rk.droidcart.products.repository.DataRepository;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,14 +19,25 @@ public class Product extends DroidDocument {
 
     private List<Dimension> dimensions;
 
+    public Product() {
+
+    }
+
+    /**
+     * @param id
+     */
+    public Product(int id) {
+        this.id = id;
+    }
+
     /**
      *
      * @param name
      * @param description
      * @param price
      */
-    public Product(String name, String description, double price) {
-        this(name, description, null, price);
+    public Product(int id, String name, String description, double price) {
+        this(id, name, description, "", price);
     }
 
     /**
@@ -33,8 +47,8 @@ public class Product extends DroidDocument {
      * @param image
      * @param price
      */
-    public Product(String name, String description, String image, double price) {
-        this(name, description, image, price, new LinkedList<Dimension>());
+    public Product(int id, String name, String description, String image, double price) {
+        this(id, name, description, image, price, new LinkedList<Dimension>());
     }
 
     /**
@@ -45,7 +59,8 @@ public class Product extends DroidDocument {
      * @param price
      * @param dimensions
      */
-    public Product(String name, String description, String image, double price, List<Dimension> dimensions) {
+    public Product(int id, String name, String description, String image, double price, List<Dimension> dimensions) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.image = image;

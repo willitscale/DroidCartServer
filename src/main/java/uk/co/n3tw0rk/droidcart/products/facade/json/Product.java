@@ -1,6 +1,7 @@
 package uk.co.n3tw0rk.droidcart.products.facade.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,10 @@ public class Product {
 
     @GET
     public Response index() {
-        List<DroidDocument> products = dataRepository.find(collection, new uk.co.n3tw0rk.droidcart.products.domain.Product("", "", 0.0d));
+
+        uk.co.n3tw0rk.droidcart.products.domain.Product product = new uk.co.n3tw0rk.droidcart.products.domain.Product();
+
+        List<DroidDocument> products = dataRepository.find(collection, product);
 
         return Response.ok(products).build();
     }
@@ -41,6 +45,7 @@ public class Product {
             @FormParam("dimensions") List<String> dimensions) {
 
         uk.co.n3tw0rk.droidcart.products.domain.Product product = new uk.co.n3tw0rk.droidcart.products.domain.Product(
+                dataRepository.autoIncrement("products"),
             name,
             description,
             price
@@ -48,12 +53,13 @@ public class Product {
 
         dataRepository.insertOne("products", product);
 
-        return Response.ok(product).build();
+        return Response.ok(product.getId()).build();
     }
 
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") String id) {
+
         return Response.ok().build();
     }
 

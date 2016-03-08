@@ -8,6 +8,7 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.types.ObjectId;
 import uk.co.n3tw0rk.droidcart.products.domain.Dimension;
 import uk.co.n3tw0rk.droidcart.products.domain.Product;
 
@@ -39,7 +40,7 @@ public class ProductCodec implements Codec<Product> {
     public Product decode(BsonReader bsonReader, DecoderContext decoderContext) {
         bsonReader.readStartDocument();
 
-        Object _id = bsonReader.readObjectId();
+        int id = bsonReader.readInt32("_id");
 
         String name = bsonReader.readString("name");
 
@@ -61,8 +62,7 @@ public class ProductCodec implements Codec<Product> {
         bsonReader.readEndArray();
         bsonReader.readEndDocument();
 
-        Product product = new Product(name, description, image, price);
-
+        Product product = new Product(id, name, description, image, price);
         product.setDimensions(dimensions);
 
         return product;
@@ -78,29 +78,42 @@ public class ProductCodec implements Codec<Product> {
 
         bsonWriter.writeStartDocument();
 
-        bsonWriter.writeName("_id");
-        bsonWriter.writeObjectId(product.getObjectId());
-
-        bsonWriter.writeName("name");
-        bsonWriter.writeString(product.getName());
-
-        bsonWriter.writeName("description");
-        bsonWriter.writeString(product.getDescription());
-
-        bsonWriter.writeName("image");
-        bsonWriter.writeString(product.getImage());
-
-        bsonWriter.writeName("price");
-        bsonWriter.writeDouble(product.getPrice());
-
-        bsonWriter.writeStartArray("dimensions");
-
-        for (Document document : product.getDimensions()) {
-            Codec<Document> documentCodec = codecRegistry.get(Document.class);
-            encoderContext.encodeWithChildContext(documentCodec, bsonWriter, document);
+        if (0 < product.getId()) {
+            bsonWriter.writeName("_id");
+            bsonWriter.writeInt32(product.getId());
         }
 
-        bsonWriter.writeEndArray();
+        if (null != product.getName()) {
+            bsonWriter.writeName("name");
+            bsonWriter.writeString(product.getName());
+        }
+
+        if (null != product.getDescription()) {
+            bsonWriter.writeName("description");
+            bsonWriter.writeString(product.getDescription());
+        }
+
+        if (null != product.getImage()) {
+            bsonWriter.writeName("image");
+            bsonWriter.writeString(product.getImage());
+        }
+
+        if (0 < product.getPrice()) {
+            bsonWriter.writeName("price");
+            bsonWriter.writeDouble(product.getPrice());
+        }
+
+        if (null != product.getDimensions() && 0 < product.getDimensions().size()) {
+            bsonWriter.writeStartArray("dimensions");
+
+            for (Document document : product.getDimensions()) {
+                Codec<Document> documentCodec = codecRegistry.get(Document.class);
+                encoderContext.encodeWithChildContext(documentCodec, bsonWriter, document);
+            }
+
+            bsonWriter.writeEndArray();
+        }
+
         bsonWriter.writeEndDocument();
     }
 

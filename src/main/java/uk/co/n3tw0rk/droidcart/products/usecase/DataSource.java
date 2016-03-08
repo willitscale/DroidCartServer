@@ -72,4 +72,10 @@ public interface DataSource {
      * @return
      */
     boolean insert(List<DroidDocument> document);
+
+    /**
+     * @param sequence
+     * @return
+     */
+    int autoIncrement(String sequence);
 }

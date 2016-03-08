@@ -53,4 +53,12 @@ public class DataRepository {
         return dataSource.setCollection(collection);
     }
 
+    /**
+     * @param sequence
+     * @return
+     */
+    public int autoIncrement(String sequence) {
+        return dataSource.autoIncrement(sequence);
+    }
+
 }
