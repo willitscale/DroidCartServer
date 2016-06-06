@@ -9,8 +9,6 @@
 
     <context:component-scan base-package="uk.co.n3tw0rk.droidcart" />
 
-    <bean id="dataRepository" class="uk.co.n3tw0rk.droidcart.products.repository.DataRepository" />
-
-    <bean id="dataSource" class="uk.co.n3tw0rk.droidcart.products.usecase.MongoDataSource" />
+    <import resource="*/*.xml"/>
 
 </beans>

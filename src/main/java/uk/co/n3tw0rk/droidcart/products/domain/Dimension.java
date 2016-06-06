@@ -1,26 +1,17 @@
 package uk.co.n3tw0rk.droidcart.products.domain;
 
-/**
- * Created by M00SEMARKTWO on 14/02/2016.
- */
-public class Dimension extends DroidDocument {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Data
+@JsonIgnoreProperties
+@Document(collection = "dimensions")
+public class Dimension {
+    @Id
     private int id;
+    @Indexed
     private String name;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
