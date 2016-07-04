@@ -24,7 +24,7 @@
 
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>uk.co.n3tw0rk.droidcart.products.facade</param-value>
+            <param-value>uk.co.n3tw0rk.droidcart.products.facade;uk.co.n3tw0rk.droidcart.carts.facades</param-value>
         </init-param>
 
         <init-param>

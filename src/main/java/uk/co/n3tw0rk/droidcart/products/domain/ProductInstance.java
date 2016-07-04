@@ -15,7 +15,7 @@ public class ProductInstance {
     @Id
     private Integer id;
     @Indexed
-    private String productId;
+    private Integer productId;
     private int quantity;
     private List<DimensionInstance> dimensions;
 }

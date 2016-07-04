@@ -6,11 +6,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @Document(collection = "products")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Product {
     @Id
     private Integer id;
@@ -21,7 +22,11 @@ public class Product {
     protected Double price;
     protected List<Dimension> dimensions;
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Create extends Product {}
+
+    @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Update extends Product {}
 }

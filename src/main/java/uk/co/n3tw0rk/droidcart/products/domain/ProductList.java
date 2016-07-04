@@ -1,16 +1,17 @@
 package uk.co.n3tw0rk.droidcart.products.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.common.collect.Lists;
+import lombok.Data;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-/**
- * Created by M00SEMARKTWO on 26/02/2016.
- */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 public class ProductList {
+    protected List<ProductInstance> productInstances = Lists.newArrayList();
 
-    protected final Map<String,Product> products = new HashMap<String, Product>();
-
-
+    public void add(ProductInstance productInstance) {
+        productInstances.add(productInstance);
+    }
 }

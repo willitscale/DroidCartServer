@@ -14,4 +14,5 @@ public class Dimension {
     private int id;
     @Indexed
     private String name;
+    private String value;
 }
