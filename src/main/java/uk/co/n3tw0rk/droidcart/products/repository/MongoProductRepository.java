@@ -1,5 +1,6 @@
 package uk.co.n3tw0rk.droidcart.products.repository;
 
+import com.mongodb.WriteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -9,13 +10,9 @@ import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.droidcart.products.domain.Product;
 import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.support.repository.MongoSupportRepository;
-import uk.co.n3tw0rk.droidcart.utils.common.StringSupport;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Locale;
 
 @Component
 public class MongoProductRepository extends MongoSupportRepository {
@@ -55,47 +52,34 @@ public class MongoProductRepository extends MongoSupportRepository {
 
     /**
      * Save or insert a product
+     *
      * @param product to be inserted or saved
      */
     public void save(Product product) {
         mongoTemplate.save(product);
     }
 
+    /**
+     * Update a product
+     *
+     * @param id      of the product to be updated
+     * @param product containing the new attributes
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     public void update(Integer id, Product product)
-            throws InvocationTargetException, IllegalAccessException {
-        Update update = new Update();
+            throws InvocationTargetException, IllegalAccessException, ProductDoesNotExistException {
         Query query = new Query(new Criteria().where("_id").is(id));
-
-        for (Method method : Product.class.getMethods()) {
-            if (!method.getName().startsWith("get")) {
-                continue;
-            }
-
-            Object newValue = method.invoke(product);
-
-            if (null == newValue) {
-                continue;
-            }
-
-            String newKey = StringSupport.attributeFromAccessor(method.getName());
-
-            try {
-                Product.class.getDeclaredField(newKey);
-                update.set(
-                        newKey,
-                        newValue
-                );
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        mongoTemplate.updateFirst(
+        Update update = buildUpdate(product, Product.class);
+        WriteResult result = mongoTemplate.updateFirst(
                 query,
                 update,
                 Product.class
         );
+
+        if (0 >= result.getN()) {
+            throw new ProductDoesNotExistException();
+        }
     }
 
     /**

@@ -15,6 +15,7 @@ import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.products.repository.MongoProductRepository;
 import uk.co.n3tw0rk.droidcart.products.usecase.ProductUseCase;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -80,9 +81,7 @@ public class ProductUseCaseTests {
         productUseCase.insert(productMock);
         verify(mongoProductRepositoryMock)
                 .insert(productArgumentCaptor.capture());
-        Product argument = productArgumentCaptor.getValue();
-        assertNotNull(argument);
-        assertThat(argument, is(productMock));
+        assertThat(productArgumentCaptor.getValue(), is(productMock));
     }
 
     @Test
@@ -90,8 +89,7 @@ public class ProductUseCaseTests {
         URI returnedURI = productUseCase.insertResource(productMock);
         verify(mongoProductRepositoryMock)
                 .insert(productArgumentCaptor.capture());
-        Product argument = productArgumentCaptor.getValue();
-        assertThat(argument, is(productMock));
+        assertThat(productArgumentCaptor.getValue(), is(productMock));
         assertNotNull(returnedURI);
         assertThat(
                 returnedURI.getPath(),
@@ -104,8 +102,7 @@ public class ProductUseCaseTests {
         productUseCase.deleteById(productId);
         verify(mongoProductRepositoryMock)
                 .deleteById(integerArgumentCaptor.capture());
-        Integer argument = integerArgumentCaptor.getValue();
-        assertThat(argument, is(productId));
+        assertThat(integerArgumentCaptor.getValue(), is(productId));
     }
 
     @Test(expected = ProductDoesNotExistException.class)
@@ -114,8 +111,7 @@ public class ProductUseCaseTests {
                 .when(mongoProductRepositoryMock)
                 .deleteById(integerArgumentCaptor.capture());
         productUseCase.deleteById(productId);
-        Integer argument = integerArgumentCaptor.getValue();
-        assertThat(argument, is(productId));
+        assertThat(integerArgumentCaptor.getValue(), is(productId));
     }
 
     @Test
@@ -125,9 +121,8 @@ public class ProductUseCaseTests {
         Product returnedProduct = productUseCase.findById(productId);
         verify(mongoProductRepositoryMock)
                 .findById(integerArgumentCaptor.capture());
-        Integer argument = integerArgumentCaptor.getValue();
         assertThat(returnedProduct, is(productMock));
-        assertThat(argument, is(productId));
+        assertThat(integerArgumentCaptor.getValue(), is(productId));
     }
 
     @Test(expected = ProductDoesNotExistException.class)
@@ -138,7 +133,55 @@ public class ProductUseCaseTests {
         Product returnedProduct = productUseCase.findById(productId);
         verify(mongoProductRepositoryMock)
                 .findById(integerArgumentCaptor.capture());
-        Integer argument = integerArgumentCaptor.getValue();
-        assertThat(argument, is(productId));
+        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        assertNull(returnedProduct);
+    }
+
+    @Test
+    public void patchValidTest()
+            throws IllegalAccessException, ProductDoesNotExistException, InvocationTargetException {
+        productUseCase.patch(
+                productId,
+                productMock
+        );
+        verify(mongoProductRepositoryMock).update(
+                integerArgumentCaptor.capture(),
+                productArgumentCaptor.capture()
+        );
+        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        assertThat(productArgumentCaptor.getValue(), is(productMock));
+    }
+
+    @Test(expected = ProductDoesNotExistException.class)
+    public void patchInvalidTest()
+            throws IllegalAccessException, ProductDoesNotExistException, InvocationTargetException {
+        doThrow(new ProductDoesNotExistException())
+                .when(mongoProductRepositoryMock)
+                .update(
+                        any(Integer.class),
+                        any(Product.class)
+                );
+        productUseCase.patch(
+                productId,
+                productMock
+        );
+        verify(mongoProductRepositoryMock).update(
+                integerArgumentCaptor.capture(),
+                productArgumentCaptor.capture()
+        );
+        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        assertThat(productArgumentCaptor.getValue(), is(productMock));
+    }
+
+    @Test
+    public void putTest() {
+        productUseCase.put(
+                productId,
+                productMock
+        );
+        verify(productMock).setId(integerArgumentCaptor.capture());
+        verify(mongoProductRepositoryMock).save(productArgumentCaptor.capture());
+        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        assertThat(productArgumentCaptor.getValue(), is(productMock));
     }
 }

@@ -6,22 +6,44 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import uk.co.n3tw0rk.droidcart.products.domain.Sequence;
+import uk.co.n3tw0rk.droidcart.utils.common.StringSupport;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+/**
+ * Mongo Suppoer Repository abstraction layer
+ */
 public abstract class MongoSupportRepository {
 
     protected final MongoTemplate mongoTemplate;
     protected final String collection;
 
+    /**
+     * @param mongoTemplate
+     * @param collection
+     */
     public MongoSupportRepository(MongoTemplate mongoTemplate,
                                   String collection) {
         this.mongoTemplate = mongoTemplate;
         this.collection = collection;
     }
 
+    /**
+     * Get the next Id for the default sequence
+     *
+     * @return the next available sequence
+     */
     public Sequence nextId() {
         return nextId(collection);
     }
 
+    /**
+     * Get the next Id for a sequence
+     *
+     * @param sequenceCollection to get the next Id for
+     * @return the next available sequence
+     */
     protected Sequence nextId(String sequenceCollection) {
         Sequence sequence = mongoTemplate.findAndModify(
                 new Query(new Criteria().where("_id").is(sequenceCollection)),
@@ -35,5 +57,45 @@ public abstract class MongoSupportRepository {
         }
 
         return sequence;
+    }
+
+    /**
+     * Build query update from object and type
+     *
+     * @param object      build the update from the non null values
+     * @param entityClass of the object type to build from
+     * @param <T>         object type
+     * @return query update rules
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    protected <T> Update buildUpdate(Object object, Class<T> entityClass)
+            throws InvocationTargetException, IllegalAccessException {
+        Update update = new Update();
+
+        for (Method method : entityClass.getMethods()) {
+            if (!method.getName().startsWith("get") || method.getName().equals("getClass")) {
+                continue;
+            }
+
+            Object newValue = method.invoke(object);
+
+            if (null == newValue) {
+                continue;
+            }
+
+            String newKey = StringSupport.attributeFromAccessor(method.getName());
+
+            try {
+                entityClass.getDeclaredField(newKey);
+                update.set(
+                        newKey,
+                        newValue
+                );
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }
+        return update;
     }
 }

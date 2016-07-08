@@ -6,7 +6,6 @@ import uk.co.n3tw0rk.droidcart.products.domain.Product;
 import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.products.repository.MongoProductRepository;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
