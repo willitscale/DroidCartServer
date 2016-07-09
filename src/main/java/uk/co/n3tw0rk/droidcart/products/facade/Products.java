@@ -3,7 +3,6 @@ package uk.co.n3tw0rk.droidcart.products.facade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.droidcart.products.domain.Product;
 import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
@@ -13,7 +12,6 @@ import uk.co.n3tw0rk.droidcart.utils.rs.PATCH;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
 
 @Component
 @Path("/products")
@@ -86,6 +84,8 @@ public class Products {
         try {
             productUseCase.put(id, product);
             return Response.ok().build();
+        } catch (ProductDoesNotExistException e) {
+            return Response.status(404).build();
         } catch (Exception e) {
             logger.error(e.toString());
             return Response.serverError().build();

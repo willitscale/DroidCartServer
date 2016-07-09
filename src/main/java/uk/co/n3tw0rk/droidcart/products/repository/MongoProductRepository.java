@@ -54,8 +54,13 @@ public class MongoProductRepository extends MongoSupportRepository {
      * Save or insert a product
      *
      * @param product to be inserted or saved
+     * @throws ProductDoesNotExistException
      */
-    public void save(Product product) {
+    public void save(Product product) throws ProductDoesNotExistException {
+        if (!exists(product.getId(), Product.class)) {
+            throw new ProductDoesNotExistException();
+        }
+
         mongoTemplate.save(product);
     }
 
@@ -66,6 +71,7 @@ public class MongoProductRepository extends MongoSupportRepository {
      * @param product containing the new attributes
      * @throws InvocationTargetException
      * @throws IllegalAccessException
+     * @throws ProductDoesNotExistException
      */
     public void update(Integer id, Product product)
             throws InvocationTargetException, IllegalAccessException, ProductDoesNotExistException {

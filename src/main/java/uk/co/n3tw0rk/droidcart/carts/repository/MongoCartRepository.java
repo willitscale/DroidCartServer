@@ -1,14 +1,17 @@
 package uk.co.n3tw0rk.droidcart.carts.repository;
 
+import com.mongodb.WriteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.droidcart.carts.domain.Cart;
 import uk.co.n3tw0rk.droidcart.carts.domain.exceptions.CartDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.support.repository.MongoSupportRepository;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @Component
@@ -43,7 +46,19 @@ public class MongoCartRepository extends MongoSupportRepository {
      *
      * @param cart to be inserted
      */
-    public void save(Cart cart) {
+    public void insert(Cart cart) {
+        mongoTemplate.insert(cart);
+    }
+
+    /**
+     * Save a cart
+     *
+     * @param cart to be inserted
+     */
+    public void save(Cart cart) throws CartDoesNotExistException {
+        if (!exists(cart.getId(), Cart.class)) {
+            throw new CartDoesNotExistException();
+        }
         mongoTemplate.insert(cart);
     }
 
@@ -59,6 +74,29 @@ public class MongoCartRepository extends MongoSupportRepository {
                 new Query().limit(limit).skip(offset),
                 Cart.class
         );
+    }
+
+    /**
+     * Update a cart
+     *
+     * @param id   of the product to be updated
+     * @param cart containing the new attributes
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public void update(Integer id, Cart cart)
+            throws InvocationTargetException, IllegalAccessException, CartDoesNotExistException {
+        Query query = new Query(new Criteria().where("_id").is(id));
+        Update update = buildUpdate(cart, Cart.class);
+        WriteResult result = mongoTemplate.updateFirst(
+                query,
+                update,
+                Cart.class
+        );
+
+        if (0 >= result.getN()) {
+            throw new CartDoesNotExistException();
+        }
     }
 
     /**

@@ -13,7 +13,7 @@ import uk.co.n3tw0rk.droidcart.carts.domain.Cart;
 import uk.co.n3tw0rk.droidcart.carts.domain.exceptions.CartDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.carts.repository.MongoCartRepository;
 import uk.co.n3tw0rk.droidcart.carts.usecase.CartUseCase;
-import uk.co.n3tw0rk.droidcart.products.domain.Sequence;
+import uk.co.n3tw0rk.droidcart.support.domain.Sequence;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -48,7 +48,7 @@ public class ProductUseCase {
         mongoProductRepository.update(id, product);
     }
 
-    public void put(Integer id, Product product) {
+    public void put(Integer id, Product product) throws ProductDoesNotExistException {
         product.setId(id);
         mongoProductRepository.save(product);
     }

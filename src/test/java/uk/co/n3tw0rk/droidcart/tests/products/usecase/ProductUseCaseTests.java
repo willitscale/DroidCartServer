@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.co.n3tw0rk.droidcart.products.domain.Product;
-import uk.co.n3tw0rk.droidcart.products.domain.Sequence;
+import uk.co.n3tw0rk.droidcart.support.domain.Sequence;
 import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.products.repository.MongoProductRepository;
 import uk.co.n3tw0rk.droidcart.products.usecase.ProductUseCase;

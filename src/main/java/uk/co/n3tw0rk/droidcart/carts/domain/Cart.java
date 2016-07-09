@@ -20,4 +20,9 @@ public class Cart extends ProductList {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Create extends Cart {
     }
+
+    @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Update extends Cart {
+    }
 }

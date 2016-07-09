@@ -7,12 +7,13 @@ import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.droidcart.carts.domain.Cart;
 import uk.co.n3tw0rk.droidcart.carts.domain.exceptions.CartDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.carts.usecase.CartUseCase;
+import uk.co.n3tw0rk.droidcart.products.domain.Product;
+import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.utils.rs.PATCH;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
 
 @Component
 @Path("/carts")
@@ -80,17 +81,31 @@ public class Carts {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response put(@PathParam("id") Integer id,
                         Cart cart) {
-        // TODO implement
-        return Response.ok().build();
+        try {
+            cartUseCase.put(id, cart);
+            return Response.ok().build();
+        } catch (CartDoesNotExistException e) {
+            return Response.status(404).build();
+        } catch (Exception e) {
+            logger.error(e.toString());
+            return Response.serverError().build();
+        }
     }
 
     @PATCH
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response patch(@PathParam("id") Integer id,
-                          String key,
-                          Object value) {
-        // TODO implement
-        return Response.ok().build();
+                          Cart.Update cart
+    ) {
+        try {
+            cartUseCase.patch(id, cart);
+            return Response.ok().build();
+        } catch (CartDoesNotExistException e) {
+            return Response.status(404).build();
+        } catch (Exception e) {
+            logger.error(e.toString());
+            return Response.serverError().build();
+        }
     }
 }

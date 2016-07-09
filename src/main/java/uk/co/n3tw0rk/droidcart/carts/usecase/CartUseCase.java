@@ -5,7 +5,10 @@ import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.droidcart.carts.domain.Cart;
 import uk.co.n3tw0rk.droidcart.carts.domain.exceptions.CartDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.carts.repository.MongoCartRepository;
+import uk.co.n3tw0rk.droidcart.products.domain.Product;
+import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -34,11 +37,21 @@ public class CartUseCase {
 
     public Integer insert(Cart cart) {
         cart.setId(mongoCartRepository.nextId().getSequence());
-        mongoCartRepository.save(cart);
+        mongoCartRepository.insert(cart);
         return cart.getId();
     }
 
     public void deleteById(Integer id) throws CartDoesNotExistException {
         mongoCartRepository.deleteById(id);
+    }
+
+    public void patch(Integer id, Cart cart) throws CartDoesNotExistException,
+            IllegalAccessException, InvocationTargetException {
+        mongoCartRepository.update(id, cart);
+    }
+
+    public void put(Integer id, Cart cart) throws CartDoesNotExistException {
+        cart.setId(id);
+        mongoCartRepository.save(cart);
     }
 }

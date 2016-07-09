@@ -1,4 +1,4 @@
-package uk.co.n3tw0rk.droidcart.products.domain;
+package uk.co.n3tw0rk.droidcart.support.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

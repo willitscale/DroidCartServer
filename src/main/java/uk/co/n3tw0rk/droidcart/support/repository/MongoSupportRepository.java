@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import uk.co.n3tw0rk.droidcart.products.domain.Sequence;
+import uk.co.n3tw0rk.droidcart.support.domain.Sequence;
 import uk.co.n3tw0rk.droidcart.utils.common.StringSupport;
 
 import java.lang.reflect.InvocationTargetException;
@@ -97,5 +97,12 @@ public abstract class MongoSupportRepository {
             }
         }
         return update;
+    }
+
+    protected <T> boolean exists(Object id, Class<T> entityClass) {
+        return mongoTemplate.exists(
+                new Query(new Criteria("_id").is(id)),
+                entityClass
+        );
     }
 }
