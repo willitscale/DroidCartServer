@@ -174,7 +174,7 @@ public class ProductUseCaseTests {
     }
 
     @Test
-    public void putTest() {
+    public void putTest() throws ProductDoesNotExistException {
         productUseCase.put(
                 productId,
                 productMock

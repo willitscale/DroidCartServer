@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.droidcart.carts.domain.Cart;
-import uk.co.n3tw0rk.droidcart.carts.domain.exceptions.CartDoesNotExistException;
+import uk.co.n3tw0rk.droidcart.carts.exceptions.CartDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.support.repository.MongoSupportRepository;
 
 import java.lang.reflect.InvocationTargetException;

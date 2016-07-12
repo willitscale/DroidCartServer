@@ -1,8 +1,9 @@
-package uk.co.n3tw0rk.droidcart.products.facade;
+package uk.co.n3tw0rk.droidcart.products.facades;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.droidcart.products.domain.Product;
 import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 @Component
 @Path("/products")
+@Scope("request")
 @Produces(MediaType.APPLICATION_JSON)
 public class Products {
 
@@ -50,10 +52,10 @@ public class Products {
     }
 
     @GET
-    @Path("/{id}")
-    public Response get(@PathParam("id") Integer id) {
+    @Path("/{productId}")
+    public Response get(@PathParam("productId") Integer productId) {
         try {
-            return Response.ok(productUseCase.findById(id)).build();
+            return Response.ok(productUseCase.findById(productId)).build();
         } catch (ProductDoesNotExistException productNotExist) {
             return Response.status(404).build();
         } catch (Exception e) {
@@ -63,10 +65,10 @@ public class Products {
     }
 
     @DELETE
-    @Path("/{id}")
-    public Response delete(@PathParam("id") Integer id) {
+    @Path("/{productId}")
+    public Response delete(@PathParam("productId") Integer productId) {
         try {
-            productUseCase.deleteById(id);
+            productUseCase.deleteById(productId);
             return Response.noContent().build();
         } catch (ProductDoesNotExistException e) {
             return Response.status(404).build();
@@ -77,12 +79,12 @@ public class Products {
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("/{productId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response put(@PathParam("id") Integer id,
+    public Response put(@PathParam("productId") Integer productId,
                         Product product) {
         try {
-            productUseCase.put(id, product);
+            productUseCase.put(productId, product);
             return Response.ok().build();
         } catch (ProductDoesNotExistException e) {
             return Response.status(404).build();
@@ -93,11 +95,11 @@ public class Products {
     }
 
     @PATCH
-    @Path("/{id}")
-    public Response patch(@PathParam("id") Integer id,
+    @Path("/{productId}")
+    public Response patch(@PathParam("productId") Integer productId,
                           Product.Update product) {
         try {
-            productUseCase.patch(id, product);
+            productUseCase.patch(productId, product);
             return Response.ok().build();
         } catch (ProductDoesNotExistException e) {
             return Response.status(404).build();

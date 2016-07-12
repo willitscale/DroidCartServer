@@ -1,4 +1,4 @@
-package uk.co.n3tw0rk.droidcart.products.facade;
+package uk.co.n3tw0rk.droidcart.products.facades;
 
 /**
  * Created by M00SEMARKTWO on 28/02/2016.

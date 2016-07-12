@@ -3,10 +3,9 @@ package uk.co.n3tw0rk.droidcart.carts.usecase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.droidcart.carts.domain.Cart;
-import uk.co.n3tw0rk.droidcart.carts.domain.exceptions.CartDoesNotExistException;
+import uk.co.n3tw0rk.droidcart.carts.exceptions.CartDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.carts.repository.MongoCartRepository;
-import uk.co.n3tw0rk.droidcart.products.domain.Product;
-import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
+import uk.co.n3tw0rk.droidcart.products.repository.MongoProductInstanceRepository;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -18,17 +17,25 @@ public class CartUseCase {
 
     private final MongoCartRepository mongoCartRepository;
 
+    private final MongoProductInstanceRepository mongoProductInstanceRepository;
+
     @Autowired
-    public CartUseCase(MongoCartRepository mongoCartRepository) {
+    public CartUseCase(MongoCartRepository mongoCartRepository,
+                       MongoProductInstanceRepository mongoProductInstanceRepository) {
         this.mongoCartRepository = mongoCartRepository;
+        this.mongoProductInstanceRepository = mongoProductInstanceRepository;
     }
 
     public List<Cart> findAll(int limit, int offset) {
         return mongoCartRepository.findAll(limit, offset);
     }
 
-    public Cart findById(Integer cartId) throws CartDoesNotExistException {
-        return mongoCartRepository.findById(cartId);
+    public Cart.Resource findById(Integer cartId) throws CartDoesNotExistException {
+        Cart cart = mongoCartRepository.findById(cartId);
+        return new Cart.Resource(
+                cart,
+                mongoProductInstanceRepository.findByIds(cart.getProductIds())
+        );
     }
 
     public URI insertResource(Cart cart) throws URISyntaxException {
