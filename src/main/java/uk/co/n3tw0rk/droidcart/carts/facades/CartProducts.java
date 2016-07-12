@@ -39,7 +39,7 @@ public class CartProducts {
     }
 
     @POST
-    public Response add() {
+    public Response create() {
         return Response.ok().build();
     }
 

@@ -27,12 +27,12 @@ public class MongoProductRepository extends MongoSupportRepository {
     /**
      * Retreive a product by its ID
      *
-     * @param id of the product
+     * @param productId of the product
      * @return instance of the product
      * @throws ProductDoesNotExistException
      */
-    public Product findById(Integer id) throws ProductDoesNotExistException {
-        Product product = mongoTemplate.findById(id, Product.class);
+    public Product findById(Integer productId) throws ProductDoesNotExistException {
+        Product product = mongoTemplate.findById(productId, Product.class);
 
         if (null == product) {
             throw new ProductDoesNotExistException();
@@ -67,23 +67,15 @@ public class MongoProductRepository extends MongoSupportRepository {
     /**
      * Update a product
      *
-     * @param id      of the product to be updated
+     * @param productId      of the product to be updated
      * @param product containing the new attributes
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      * @throws ProductDoesNotExistException
      */
-    public void update(Integer id, Product product)
+    public void update(Integer productId, Product product)
             throws InvocationTargetException, IllegalAccessException, ProductDoesNotExistException {
-        Query query = new Query(new Criteria().where("_id").is(id));
-        Update update = buildUpdate(product, Product.class);
-        WriteResult result = mongoTemplate.updateFirst(
-                query,
-                update,
-                Product.class
-        );
-
-        if (0 >= result.getN()) {
+        if (!update(productId, product, Product.class)) {
             throw new ProductDoesNotExistException();
         }
     }
@@ -91,12 +83,12 @@ public class MongoProductRepository extends MongoSupportRepository {
     /**
      * Delete a product by its ID
      *
-     * @param id of the product to be deleted
+     * @param productId of the product to be deleted
      * @throws ProductDoesNotExistException
      */
-    public void deleteById(Integer id) throws ProductDoesNotExistException {
+    public void deleteById(Integer productId) throws ProductDoesNotExistException {
         List<Product> products = mongoTemplate.findAllAndRemove(
-                new Query(new Criteria().where("_id").is(id)),
+                new Query(new Criteria().where("_id").is(productId)),
                 Product.class
         );
 

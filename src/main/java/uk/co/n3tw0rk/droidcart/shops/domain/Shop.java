@@ -18,4 +18,8 @@ public class Shop {
     @Indexed
     protected String name;
     protected List<Category> categories;
+
+    @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Editor extends Shop {}
 }

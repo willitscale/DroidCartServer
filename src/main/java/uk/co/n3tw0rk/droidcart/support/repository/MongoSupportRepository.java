@@ -1,10 +1,12 @@
 package uk.co.n3tw0rk.droidcart.support.repository;
 
+import com.mongodb.WriteResult;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import uk.co.n3tw0rk.droidcart.products.domain.Product;
 import uk.co.n3tw0rk.droidcart.support.domain.Sequence;
 import uk.co.n3tw0rk.droidcart.utils.common.StringSupport;
 
@@ -99,6 +101,34 @@ public abstract class MongoSupportRepository {
         return update;
     }
 
+    /**
+     *
+     * @param id
+     * @param data
+     * @param entityClass
+     * @param <T>
+     * @return
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    protected <T> boolean update(Object id, Object data, Class<T> entityClass)
+            throws InvocationTargetException, IllegalAccessException {
+        Query query = new Query(new Criteria().where("_id").is(id));
+        Update update = buildUpdate(data, entityClass);
+        return (0 >= mongoTemplate.updateFirst(
+                query,
+                update,
+                entityClass
+        ).getN());
+    }
+
+    /**
+     *
+     * @param id
+     * @param entityClass
+     * @param <T>
+     * @return
+     */
     protected <T> boolean exists(Object id, Class<T> entityClass) {
         return mongoTemplate.exists(
                 new Query(new Criteria("_id").is(id)),

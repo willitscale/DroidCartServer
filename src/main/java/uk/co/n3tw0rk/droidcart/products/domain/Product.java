@@ -24,9 +24,5 @@ public class Product {
 
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Create extends Product {}
-
-    @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Update extends Product {}
+    public static class Editor extends Product {}
 }

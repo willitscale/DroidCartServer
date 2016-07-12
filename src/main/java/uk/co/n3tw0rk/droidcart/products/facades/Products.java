@@ -42,7 +42,7 @@ public class Products {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response post(Product.Create product) {
+    public Response post(Product.Editor product) {
         try {
             return Response.created(productUseCase.insertResource(product)).build();
         } catch (Exception e) {
@@ -85,7 +85,7 @@ public class Products {
                         Product product) {
         try {
             productUseCase.put(productId, product);
-            return Response.ok().build();
+            return Response.noContent().build();
         } catch (ProductDoesNotExistException e) {
             return Response.status(404).build();
         } catch (Exception e) {
@@ -97,10 +97,10 @@ public class Products {
     @PATCH
     @Path("/{productId}")
     public Response patch(@PathParam("productId") Integer productId,
-                          Product.Update product) {
+                          Product.Editor product) {
         try {
             productUseCase.patch(productId, product);
-            return Response.ok().build();
+            return Response.noContent().build();
         } catch (ProductDoesNotExistException e) {
             return Response.status(404).build();
         } catch (Exception e) {

@@ -35,21 +35,21 @@ public class ProductUseCase {
         return product.getId();
     }
 
-    public void deleteById(Integer id) throws ProductDoesNotExistException {
-        mongoProductRepository.deleteById(id);
+    public void deleteById(Integer productId) throws ProductDoesNotExistException {
+        mongoProductRepository.deleteById(productId);
     }
 
-    public Product findById(Integer id) throws ProductDoesNotExistException {
-        return mongoProductRepository.findById(id);
+    public Product findById(Integer productId) throws ProductDoesNotExistException {
+        return mongoProductRepository.findById(productId);
     }
 
-    public void patch(Integer id, Product product) throws ProductDoesNotExistException,
-            IllegalAccessException, InvocationTargetException {
-        mongoProductRepository.update(id, product);
+    public void patch(Integer productId, Product product)
+            throws ProductDoesNotExistException, IllegalAccessException, InvocationTargetException {
+        mongoProductRepository.update(productId, product);
     }
 
-    public void put(Integer id, Product product) throws ProductDoesNotExistException {
-        product.setId(id);
+    public void put(Integer productId, Product product) throws ProductDoesNotExistException {
+        product.setId(productId);
         mongoProductRepository.save(product);
     }
 }
