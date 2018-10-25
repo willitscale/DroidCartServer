@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <spring-version>4.2.6.RELEASE</spring-version>
+        <spring-version>5.1.1.RELEASE</spring-version>
         <spring-mongo-version>1.9.1.RELEASE</spring-mongo-version>
         <mongo-driver-version>3.2.1</mongo-driver-version>
         <jersey-version>1.8</jersey-version>
