@@ -1,26 +1,18 @@
 package uk.co.n3tw0rk.droidcart.carts.facades;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import uk.co.n3tw0rk.droidcart.carts.domain.Cart;
 import uk.co.n3tw0rk.droidcart.carts.exceptions.CartDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.carts.usecase.CartUseCase;
-import uk.co.n3tw0rk.droidcart.utils.rs.PATCH;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-@Component
-@Path("/carts")
-@Scope("request")
-@Produces(MediaType.APPLICATION_JSON)
+@Log4j2
+@RestController
 public class Carts {
-
-    Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CartUseCase cartUseCase;
 
@@ -29,85 +21,78 @@ public class Carts {
         this.cartUseCase = cartUseCase;
     }
 
-    @GET
-    public Response index(@DefaultValue("10") @QueryParam("limit") int limit,
-                          @DefaultValue("0") @QueryParam("offset") int offset) {
+    @GetMapping(path = "/carts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity index(@RequestParam(value = "limit" ,defaultValue = "10") int limit,
+                                @RequestParam(value = "offset", defaultValue = "0") int offset) {
         try {
-            return Response.ok(cartUseCase.findAll(limit, offset)).build();
+            return ResponseEntity.ok(cartUseCase.findAll(limit, offset));
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GET
-    @Path("/{cartId}")
-    public Response get(@PathParam("cartId") Integer cartId) {
+    @GetMapping(path = "/carts/{cartId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity get(@PathVariable("cartId") Integer cartId) {
         try {
-            return Response.ok(cartUseCase.findById(cartId)).build();
+            return ResponseEntity.ok(cartUseCase.findById(cartId));
         } catch (CartDoesNotExistException e) {
-            return Response.status(404).build();
+            return ResponseEntity.status(404).build();
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response post(Cart.Create cart) {
+    @PostMapping(path = "/carts", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity post(@RequestBody Cart.Create cart) {
         try {
-            return Response.created(cartUseCase.insertResource(cart)).build();
+            return ResponseEntity.created(cartUseCase.insertResource(cart)).build();
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @DELETE
-    @Path("/{cartId}")
-    public Response delete(@PathParam("cartId") Integer cartId) {
+    @DeleteMapping(path = "/carts/{cartId}")
+    public ResponseEntity delete(@PathVariable("cartId") Integer cartId) {
         try {
             cartUseCase.deleteById(cartId);
-            return Response.noContent().build();
+            return ResponseEntity.noContent().build();
         } catch (CartDoesNotExistException e) {
-            return Response.status(404).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PUT
-    @Path("/{cartId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response put(@PathParam("cartId") Integer cartId,
+    @PutMapping(path = "/carts/{cartId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity put(@PathVariable("cartId") Integer cartId,
                         Cart cart) {
         try {
             cartUseCase.put(cartId, cart);
-            return Response.ok().build();
+            return ResponseEntity.noContent().build();
         } catch (CartDoesNotExistException e) {
-            return Response.status(404).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PATCH
-    @Path("/{cartId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response patch(@PathParam("cartId") Integer cartId,
+    @PatchMapping(path = "/carts/{cartId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity patch(@PathVariable("cartId") Integer cartId,
                           Cart.Update cart
     ) {
         try {
             cartUseCase.patch(cartId, cart);
-            return Response.ok().build();
+            return ResponseEntity.noContent().build();
         } catch (CartDoesNotExistException e) {
-            return Response.status(404).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

@@ -1,6 +1,6 @@
 package uk.co.n3tw0rk.droidcart.carts.repository;
 
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -88,13 +88,13 @@ public class MongoCartRepository extends MongoSupportRepository {
             throws InvocationTargetException, IllegalAccessException, CartDoesNotExistException {
         Query query = new Query(new Criteria().where("_id").is(id));
         Update update = buildUpdate(cart, Cart.class);
-        WriteResult result = mongoTemplate.updateFirst(
+        UpdateResult result = mongoTemplate.updateFirst(
                 query,
                 update,
                 Cart.class
         );
 
-        if (0 >= result.getN()) {
+        if (0 >= result.getModifiedCount()) {
             throw new CartDoesNotExistException();
         }
     }

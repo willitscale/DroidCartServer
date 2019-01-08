@@ -1,4 +1,4 @@
-package uk.co.n3tw0rk.droidcart.customer.domain;
+package uk.co.n3tw0rk.droidcart.domain;
 
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;

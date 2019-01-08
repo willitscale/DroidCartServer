@@ -1,11 +1,9 @@
 package uk.co.n3tw0rk.droidcart.products.repository;
 
-import com.mongodb.WriteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.droidcart.products.domain.Product;
 import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;

@@ -1,7 +1,7 @@
 package uk.co.n3tw0rk.droidcart.products.repository;
 
 import com.google.common.collect.Lists;
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -55,13 +55,13 @@ public class MongoProductInstanceRepository extends MongoSupportRepository {
             throws InvocationTargetException, IllegalAccessException, ProductInstanceDoesNotExistException {
         Query query = new Query(new Criteria().where("_id").is(id));
         Update update = buildUpdate(productInstance, ProductInstance.class);
-        WriteResult writeResult = mongoTemplate.updateFirst(
+        UpdateResult writeResult = mongoTemplate.updateFirst(
                 query,
                 update,
                 ProductInstance.class
         );
 
-        if (0 >= writeResult.getN()) {
+        if (0 >= writeResult.getModifiedCount()) {
             throw new ProductInstanceDoesNotExistException();
         }
     }

@@ -1,4 +1,4 @@
-package uk.co.n3tw0rk.droidcart.tests.products.repository;
+package uk.co.n3tw0rk.droidcart.products.repository;
 
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -8,22 +8,21 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import uk.co.n3tw0rk.droidcart.products.domain.Product;
-import uk.co.n3tw0rk.droidcart.support.domain.Sequence;
 import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
-import uk.co.n3tw0rk.droidcart.products.repository.MongoProductRepository;
+import uk.co.n3tw0rk.droidcart.support.domain.Sequence;
 
 import java.util.List;
 
-import static junit.framework.TestCase.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -31,9 +30,9 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class MongoProductRepositoryTests {
 
-    private static final Integer productId = 123;
-    private static final int limit = 10;
-    private static final int offset = 0;
+    private static final Integer PRODUCT_ID = 123;
+    private static final int LIMIT = 10;
+    private static final int OFFSET = 0;
 
     @Mock
     private MongoTemplate mongoTemplateMock;
@@ -64,13 +63,13 @@ public class MongoProductRepositoryTests {
     @Test
     public void findByIdValidTest() throws ProductDoesNotExistException {
         when(mongoTemplateMock.findById(
-                productId,
+                PRODUCT_ID,
                 Product.class
         )).thenReturn(productMock);
-        Product returnedProduct = mongoProductRepository.findById(productId);
+        Product returnedProduct = mongoProductRepository.findById(PRODUCT_ID);
         verify(mongoTemplateMock)
                 .findById(
-                        productId,
+                        PRODUCT_ID,
                         Product.class
                 );
         assertThat(returnedProduct, is(productMock));
@@ -83,7 +82,7 @@ public class MongoProductRepositoryTests {
                 eq(Product.class)
         )).thenReturn(null);
 
-        Product returnedProduct = mongoProductRepository.findById(productId);
+        Product returnedProduct = mongoProductRepository.findById(PRODUCT_ID);
         verify(mongoTemplateMock)
                 .findById(
                         integerArgumentCaptor.capture(),
@@ -91,7 +90,7 @@ public class MongoProductRepositoryTests {
                 );
         Integer argument = integerArgumentCaptor.getValue();
         assertNull(returnedProduct);
-        assertThat(argument, is(productId));
+        assertThat(argument, is(PRODUCT_ID));
     }
 
     @Test
@@ -111,14 +110,14 @@ public class MongoProductRepositoryTests {
                         any(Query.class),
                         eq(Product.class)
                 );
-        mongoProductRepository.deleteById(productId);
+        mongoProductRepository.deleteById(PRODUCT_ID);
         verify(mongoTemplateMock)
                 .findAllAndRemove(
                         queryArgumentCaptor.capture(),
                         eq(Product.class)
                 );
         Query query = queryArgumentCaptor.getValue();
-        assertThat((Integer)query.getQueryObject().get("_id"), is(productId));
+        assertThat((Integer) query.getQueryObject().get("_id"), is(PRODUCT_ID));
     }
 
     @Test(expected = ProductDoesNotExistException.class)
@@ -128,19 +127,19 @@ public class MongoProductRepositoryTests {
                 any(Query.class),
                 eq(Product.class)
         )).thenReturn(emptyList);
-        mongoProductRepository.deleteById(productId);
+        mongoProductRepository.deleteById(PRODUCT_ID);
         verify(mongoTemplateMock)
                 .findAllAndRemove(
                         queryArgumentCaptor.capture(),
                         eq(Product.class)
                 );
         Query query = queryArgumentCaptor.getValue();
-        assertThat((Integer)query.getQueryObject().get("_id"), is(productId));
+        assertThat((Integer) query.getQueryObject().get("_id"), is(PRODUCT_ID));
     }
 
     @Test
     public void findAllTest() {
-        List<Product> returned = mongoProductRepository.findAll(limit, offset);
+        List<Product> returned = mongoProductRepository.findAll(LIMIT, OFFSET);
         verify(mongoTemplateMock)
                 .find(
                         queryArgumentCaptor.capture(),
@@ -148,8 +147,8 @@ public class MongoProductRepositoryTests {
                 );
         Query argument = queryArgumentCaptor.getValue();
         assertThat(returned, is(productList));
-        assertThat(argument.getLimit(), is(limit));
-        assertThat(argument.getSkip(), is(offset));
+        assertThat(argument.getLimit(), is(LIMIT));
+        assertThat((int) argument.getSkip(), is(OFFSET));
     }
 
     @Test
@@ -173,7 +172,7 @@ public class MongoProductRepositoryTests {
         Query argument = queryArgumentCaptor.getValue();
         assertThat(returned, is(sequenceMock));
         assertThat(
-                (String) argument.getQueryObject().get("_id"),
+                argument.getQueryObject().get("_id"),
                 is(MongoProductRepository.COLLECTION)
         );
     }
@@ -193,7 +192,7 @@ public class MongoProductRepositoryTests {
         Query argument = queryArgumentCaptor.getValue();
         assertThat(returned, not(sequenceMock));
         assertThat(
-                (String) argument.getQueryObject().get("_id"),
+                argument.getQueryObject().get("_id"),
                 is(MongoProductRepository.COLLECTION)
         );
         assertThat(

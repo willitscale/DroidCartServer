@@ -1,16 +1,14 @@
 package uk.co.n3tw0rk.droidcart.carts.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import uk.co.n3tw0rk.droidcart.products.domain.Product;
 import uk.co.n3tw0rk.droidcart.products.domain.ProductInstance;
-import uk.co.n3tw0rk.droidcart.products.domain.ProductList;
 
 import java.util.Date;
 import java.util.List;
@@ -37,16 +35,19 @@ public class Cart {
     protected Date created;
 
     @Data
+    @EqualsAndHashCode(callSuper = false)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Create extends Cart {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = false)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Update extends Cart {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = false)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Resource extends Cart {
         protected List<ProductInstance> products;

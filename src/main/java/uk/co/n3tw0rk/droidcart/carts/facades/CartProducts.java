@@ -1,23 +1,15 @@
 package uk.co.n3tw0rk.droidcart.carts.facades;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import uk.co.n3tw0rk.droidcart.carts.usecase.CartProductsUseCase;
-import uk.co.n3tw0rk.droidcart.utils.rs.PATCH;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-@Component
-@Path("/carts/{cartId}")
-@Scope("request")
-@Produces(MediaType.APPLICATION_JSON)
+@Log4j2
+@RestController
 public class CartProducts {
-
-    @PathParam("cartId")
-    private Integer cartId;
 
     private final CartProductsUseCase cartProductsUseCase;
 
@@ -26,41 +18,39 @@ public class CartProducts {
         this.cartProductsUseCase = cartProductsUseCase;
     }
 
-    @GET
-    @Path("/products")
-    public Response index() {
-        return Response.ok().build();
+    @GetMapping(path = "/carts/{cartId}/products", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity index(@PathVariable("cartId") Integer cartId) {
+        return ResponseEntity.noContent().build();
     }
 
-    @GET
-    @Path("/products/{productId}")
-    public Response get(@PathParam("productId") Integer productId) {
-        return Response.ok().build();
+    @GetMapping(value = "/carts/{cartId}/products/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity get(@PathVariable("cartId") Integer cartId,
+                              @PathVariable("productId") Integer productId) {
+        return ResponseEntity.noContent().build();
     }
 
-    @POST
-    public Response create() {
-        return Response.ok().build();
+    @PostMapping(path = "/carts/{cartId}/products/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity create(@PathVariable("cartId") Integer cartId) {
+        return ResponseEntity.ok().build();
     }
 
-    @DELETE
-    @Path("/products/{productId}")
-    public Response delete(@PathParam("productId") Integer productId) {
-        return Response.ok().build();
+    @DeleteMapping("/carts/{cartId}/products/{productId}")
+    public ResponseEntity delete(@PathVariable("cartId") Integer cartId,
+                                 @PathVariable("productId") Integer productId) {
+        return ResponseEntity.noContent().build();
     }
 
-    @PATCH
-    @Path("/products/{productId}")
-    public Response patch(@PathParam("productId") Integer productId) {
-        return Response.ok().build();
+    @PatchMapping(path = "/carts/{cartId}/products/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity patch(@PathVariable("cartId") Integer cartId,
+                                @PathVariable("productId") Integer productId) {
+        return ResponseEntity.noContent().build();
     }
 
-    @PUT
-    @Path("/products/{productId}")
-    public Response put(@PathParam("productId") Integer productId) {
-        return Response.ok().build();
+    @PutMapping(path = "/carts/{cartId}/products/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity put(@PathVariable("cartId") Integer cartId,
+                              @PathVariable("productId") Integer productId) {
+        return ResponseEntity.noContent().build();
     }
-
 
 
 }

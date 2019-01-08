@@ -1,4 +1,4 @@
-package uk.co.n3tw0rk.droidcart.tests.products.usecase;
+package uk.co.n3tw0rk.droidcart.products.usecase;
 
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -8,12 +8,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import uk.co.n3tw0rk.droidcart.products.domain.Product;
-import uk.co.n3tw0rk.droidcart.support.domain.Sequence;
 import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.products.repository.MongoProductRepository;
-import uk.co.n3tw0rk.droidcart.products.usecase.ProductUseCase;
+import uk.co.n3tw0rk.droidcart.support.domain.Sequence;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -30,9 +29,9 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ProductUseCaseTests {
 
-    private static final int productId = 123;
-    private static final int limit = 10;
-    private static final int offset = 0;
+    private static final int PRODUCT_ID = 123;
+    private static final int LIMIT = 10;
+    private static final int OFFSET = 0;
 
     @Mock
     private MongoProductRepository mongoProductRepositoryMock;
@@ -60,20 +59,20 @@ public class ProductUseCaseTests {
         when(mongoProductRepositoryMock.nextId())
                 .thenReturn(sequenceMock);
         when(productMock.getId())
-                .thenReturn(productId);
+                .thenReturn(PRODUCT_ID);
     }
 
     @Test
     public void findAllTest() {
-        List<Product> returnedProductList = productUseCase.findAll(limit,offset);
+        List<Product> returnedProductList = productUseCase.findAll(LIMIT,OFFSET);
         verify(mongoProductRepositoryMock).findAll(
                 integerArgumentCaptor.capture(),
                 integerArgumentCaptor.capture()
         );
         assertThat(returnedProductList, is(productList));
         List<Integer> arguments = integerArgumentCaptor.getAllValues();
-        assertThat(arguments.get(0), is(limit));
-        assertThat(arguments.get(1), is(offset));
+        assertThat(arguments.get(0), is(LIMIT));
+        assertThat(arguments.get(1), is(OFFSET));
     }
 
     @Test
@@ -99,10 +98,10 @@ public class ProductUseCaseTests {
 
     @Test
     public void deleteByIdValidTest() throws ProductDoesNotExistException {
-        productUseCase.deleteById(productId);
+        productUseCase.deleteById(PRODUCT_ID);
         verify(mongoProductRepositoryMock)
                 .deleteById(integerArgumentCaptor.capture());
-        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        assertThat(integerArgumentCaptor.getValue(), is(PRODUCT_ID));
     }
 
     @Test(expected = ProductDoesNotExistException.class)
@@ -110,19 +109,19 @@ public class ProductUseCaseTests {
         doThrow(new ProductDoesNotExistException())
                 .when(mongoProductRepositoryMock)
                 .deleteById(integerArgumentCaptor.capture());
-        productUseCase.deleteById(productId);
-        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        productUseCase.deleteById(PRODUCT_ID);
+        assertThat(integerArgumentCaptor.getValue(), is(PRODUCT_ID));
     }
 
     @Test
     public void findByIdValidTest() throws ProductDoesNotExistException {
         when(mongoProductRepositoryMock.findById(any(Integer.class)))
                 .thenReturn(productMock);
-        Product returnedProduct = productUseCase.findById(productId);
+        Product returnedProduct = productUseCase.findById(PRODUCT_ID);
         verify(mongoProductRepositoryMock)
                 .findById(integerArgumentCaptor.capture());
         assertThat(returnedProduct, is(productMock));
-        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        assertThat(integerArgumentCaptor.getValue(), is(PRODUCT_ID));
     }
 
     @Test(expected = ProductDoesNotExistException.class)
@@ -130,10 +129,10 @@ public class ProductUseCaseTests {
         when(mongoProductRepositoryMock.findById(any(Integer.class)))
                 .thenThrow(new ProductDoesNotExistException())
                 .thenReturn(null);
-        Product returnedProduct = productUseCase.findById(productId);
+        Product returnedProduct = productUseCase.findById(PRODUCT_ID);
         verify(mongoProductRepositoryMock)
                 .findById(integerArgumentCaptor.capture());
-        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        assertThat(integerArgumentCaptor.getValue(), is(PRODUCT_ID));
         assertNull(returnedProduct);
     }
 
@@ -141,14 +140,14 @@ public class ProductUseCaseTests {
     public void patchValidTest()
             throws IllegalAccessException, ProductDoesNotExistException, InvocationTargetException {
         productUseCase.patch(
-                productId,
+                PRODUCT_ID,
                 productMock
         );
         verify(mongoProductRepositoryMock).update(
                 integerArgumentCaptor.capture(),
                 productArgumentCaptor.capture()
         );
-        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        assertThat(integerArgumentCaptor.getValue(), is(PRODUCT_ID));
         assertThat(productArgumentCaptor.getValue(), is(productMock));
     }
 
@@ -162,26 +161,26 @@ public class ProductUseCaseTests {
                         any(Product.class)
                 );
         productUseCase.patch(
-                productId,
+                PRODUCT_ID,
                 productMock
         );
         verify(mongoProductRepositoryMock).update(
                 integerArgumentCaptor.capture(),
                 productArgumentCaptor.capture()
         );
-        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        assertThat(integerArgumentCaptor.getValue(), is(PRODUCT_ID));
         assertThat(productArgumentCaptor.getValue(), is(productMock));
     }
 
     @Test
     public void putTest() throws ProductDoesNotExistException {
         productUseCase.put(
-                productId,
+                PRODUCT_ID,
                 productMock
         );
         verify(productMock).setId(integerArgumentCaptor.capture());
         verify(mongoProductRepositoryMock).save(productArgumentCaptor.capture());
-        assertThat(integerArgumentCaptor.getValue(), is(productId));
+        assertThat(integerArgumentCaptor.getValue(), is(PRODUCT_ID));
         assertThat(productArgumentCaptor.getValue(), is(productMock));
     }
 }

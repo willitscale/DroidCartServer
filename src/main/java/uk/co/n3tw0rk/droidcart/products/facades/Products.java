@@ -1,26 +1,18 @@
 package uk.co.n3tw0rk.droidcart.products.facades;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import uk.co.n3tw0rk.droidcart.products.domain.Product;
 import uk.co.n3tw0rk.droidcart.products.exceptions.ProductDoesNotExistException;
 import uk.co.n3tw0rk.droidcart.products.usecase.ProductUseCase;
-import uk.co.n3tw0rk.droidcart.utils.rs.PATCH;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-@Component
-@Path("/products")
-@Scope("request")
-@Produces(MediaType.APPLICATION_JSON)
+@Log4j2
+@RestController
 public class Products {
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ProductUseCase productUseCase;
 
@@ -29,83 +21,77 @@ public class Products {
         this.productUseCase = productUseCase;
     }
 
-    @GET
-    public Response index(@DefaultValue("10") @QueryParam("limit") int limit,
-                          @DefaultValue("0") @QueryParam("offset") int offset) {
+    @GetMapping(path = "/products", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity index(@RequestParam(value = "limit", defaultValue = "10") int limit,
+                                @RequestParam(value = "offset", defaultValue = "0") int offset) {
         try {
-            return Response.ok(productUseCase.findAll(limit, offset)).build();
+            return ResponseEntity.ok(productUseCase.findAll(limit, offset));
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response post(Product.Editor product) {
+    @PostMapping(path = "/products", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity post(@RequestBody Product.Editor product) {
         try {
-            return Response.created(productUseCase.insertResource(product)).build();
+            return ResponseEntity.created(productUseCase.insertResource(product)).build();
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GET
-    @Path("/{productId}")
-    public Response get(@PathParam("productId") Integer productId) {
+    @GetMapping(path = "/products/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity get(@PathVariable("productId") Integer productId) {
         try {
-            return Response.ok(productUseCase.findById(productId)).build();
+            return ResponseEntity.ok(productUseCase.findById(productId));
         } catch (ProductDoesNotExistException productNotExist) {
-            return Response.status(404).build();
+            return ResponseEntity.status(404).build();
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @DELETE
-    @Path("/{productId}")
-    public Response delete(@PathParam("productId") Integer productId) {
+    @DeleteMapping(path = "/products/{productId}")
+    public ResponseEntity delete(@PathVariable("productId") Integer productId) {
         try {
             productUseCase.deleteById(productId);
-            return Response.noContent().build();
+            return ResponseEntity.noContent().build();
         } catch (ProductDoesNotExistException e) {
-            return Response.status(404).build();
+            return ResponseEntity.status(404).build();
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PUT
-    @Path("/{productId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response put(@PathParam("productId") Integer productId,
-                        Product product) {
+    @PutMapping(path = "/products/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity put(@PathVariable("productId") Integer productId,
+                              @RequestBody Product product) {
         try {
             productUseCase.put(productId, product);
-            return Response.noContent().build();
+            return ResponseEntity.noContent().build();
         } catch (ProductDoesNotExistException e) {
-            return Response.status(404).build();
+            return ResponseEntity.status(404).build();
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PATCH
-    @Path("/{productId}")
-    public Response patch(@PathParam("productId") Integer productId,
-                          Product.Editor product) {
+    @PatchMapping(path = "/products/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity patch(@PathVariable("productId") Integer productId,
+                                @RequestBody Product.Editor product) {
         try {
             productUseCase.patch(productId, product);
-            return Response.noContent().build();
+            return ResponseEntity.noContent().build();
         } catch (ProductDoesNotExistException e) {
-            return Response.status(404).build();
+            return ResponseEntity.status(404).build();
         } catch (Exception e) {
-            logger.error(e.toString());
-            return Response.serverError().build();
+            log.error(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

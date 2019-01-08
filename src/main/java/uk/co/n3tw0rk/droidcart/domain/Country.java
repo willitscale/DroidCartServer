@@ -1,4 +1,4 @@
-package uk.co.n3tw0rk.droidcart.customer.domain;
+package uk.co.n3tw0rk.droidcart.domain;
 
 public enum Country {
     USA,
